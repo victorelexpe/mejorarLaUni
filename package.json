@@ -1,0 +1,27 @@
+{
+  "name": "mejorarlauni",
+  "author": {
+    "name": "Victor Elexpe",
+    "email": "victorelexpe@gmail.com",
+    "url": "https://elexpe.dev"
+  },
+  "description": "Propón cambios para mejorar la universidad",
+  "version": "1.2.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.13.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.28",
+    "@fortawesome/free-brands-svg-icons": "^5.13.0",
+    "@fortawesome/react-fontawesome": "^0.1.9",
+    "@zeit/next-css": "^1.0.1",
+    "next": "9.3.2",
+    "next-analytics": "^2.0.0",
+    "react": "16.13.1",
+    "react-dom": "16.13.1"
+  }
+}

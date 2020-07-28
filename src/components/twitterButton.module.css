@@ -1,0 +1,10 @@
+.twitterButton {
+	padding: 1.5rem;
+	width: 100%;
+	border-radius: 0 0 10px 10px;
+}
+
+.twitterButton a {
+	color: inherit;
+	text-decoration: none;
+}
