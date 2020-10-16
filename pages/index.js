@@ -159,7 +159,8 @@ export async function getServerSideProps(context) {
 
     if(data){
       const email = data.email
-      user = await(await fetch(`${process.env.API_URL}/api/users/findUserByEmail`, {
+      //user = await(await fetch(`${process.env.API_URL}/api/users/findUserByEmail`, {
+      user = await(await fetch('https://mejorarlauni.com/api/users/findUserByEmail', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -171,8 +172,8 @@ export async function getServerSideProps(context) {
     }else user = null
   }else user = null
     
-  const ideas = await (await fetch(`${process.env.API_URL}/api/post`)).json();
-
+  //const ideas = await (await fetch(`${process.env.API_URL}/api/post`)).json();
+  const ideas = await (await fetch('https://mejorarlauni.com/api/post')).json();
   return { 
     props: {
       ideas,

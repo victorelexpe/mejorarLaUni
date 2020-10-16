@@ -74,7 +74,8 @@ export async function getServerSideProps(context) {
     user = null
   else {
     await middleware.apply(context.req, context.res);
-    user = await (await fetch(`${process.env.API_URL}/api/users/${context.params.userId}`)).json();
+    //user = await (await fetch(`${process.env.API_URL}/api/users/${context.params.userId}`)).json();
+    user = await (await fetch('https://mejorarlauni.com/api/users/${context.params.userId}')).json();
   }
   
   return {
