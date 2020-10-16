@@ -1,15 +1,12 @@
 import Router from "next/router";
 import withAnalytics from "next-analytics";
 import Home from "./index"
-import Navbar from "../components/navbar"
 
 function MyApp({ Component, pageProps }) {
     return (
-        <Navbar>
-            <Component {...pageProps}>
-                <Home {...pageProps}/>
-            </Component>
-        </Navbar>
+        <Component {...pageProps}>
+            <Home {...pageProps}/>
+        </Component>
     )
 }
   

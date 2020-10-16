@@ -1,11 +1,12 @@
 import styles from './footer.module.css'
+import Link from 'next/link'
 
 export default function Footer() {
     return (
         <div className={styles.footer}>
-            <a href="https://letspingit.com" target="_blank" rel="noopener noreferrer">
+            <Link href="https://letspingit.com">
                 Por Let's Ping It
-            </a>
+            </Link>
         </div>
     )
 }
