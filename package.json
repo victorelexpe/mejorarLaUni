@@ -1,12 +1,12 @@
 {
   "name": "mejorarlauni",
   "author": {
-    "name": "Victor Elexpe",
+    "name": "Let's Ping It",
     "email": "victorelexpe@gmail.com",
-    "url": "https://elexpe.dev"
+    "url": "https://letspingit.com"
   },
   "description": "Propón cambios para mejorar la universidad",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -17,11 +17,22 @@
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-brands-svg-icons": "^5.13.0",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.9",
     "@zeit/next-css": "^1.0.1",
-    "next": "9.3.2",
+    "bcrypt": "^5.0.0",
+    "cookies": "^0.8.0",
+    "isomorphic-unfetch": "^3.1.0",
+    "js-cookie": "^2.2.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.5.2",
+    "next": "^9.3.2",
     "next-analytics": "^2.0.0",
-    "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "next-connect": "^0.9.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "swr": "^0.1.16",
+    "uuid": "^3.4.0",
+    "validator": "^13.1.17"
   }
 }
