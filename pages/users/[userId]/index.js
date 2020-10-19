@@ -91,8 +91,8 @@ export async function getServerSideProps(context) {
   else {
     await handler.apply(context.req, context.res);
     //user = await (await fetch(`${process.env.API_URL}/api/users/${context.params.userId}`)).json();
-    user = await (await fetch(`${process.env.VERCEL_URL}/api/users/${context.params.userId}`)).json();
-    ideas = await(await fetch(`${process.env.VERCEL_URL}/api/posts/${context.params.userId}`)).json()
+    user = await (await fetch(`${process.env.API_URL}/api/users/${context.params.userId}`)).json();
+    ideas = await(await fetch(`${process.env.API_URL}/api/posts/${context.params.userId}`)).json()
   }
   
   return {

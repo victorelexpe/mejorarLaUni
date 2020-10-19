@@ -125,7 +125,7 @@ export async function getServerSideProps(context) {
     if(data){
       const email = data.email
       //user = await(await fetch(`${process.env.API_URL}/api/users/find_user_by_email`, {
-      user = await(await fetch(`${process.env.VERCEL_URL}/api/users/find_user_by_email`, {
+      user = await(await fetch(`${process.env.API_URL}/api/users/find_user_by_email`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

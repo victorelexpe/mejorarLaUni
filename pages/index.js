@@ -159,7 +159,7 @@ export async function getServerSideProps(context) {
 
     if(data){
       const email = data.email
-      user = await(await fetch(`${process.env.VERCEL_URL}/api/users/find_user_by_email`, {
+      user = await(await fetch(`${process.env.API_URL}/api/users/find_user_by_email`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -171,7 +171,7 @@ export async function getServerSideProps(context) {
     }else user = null
   }else user = null
     
-  const ideas = await (await fetch(`${process.env.VERCEL_URL}/api/posts`)).json();
+  const ideas = await (await fetch(`${process.env.API_URL}/api/posts`)).json();
   return { 
     props: {
       ideas,
