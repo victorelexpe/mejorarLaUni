@@ -7,7 +7,7 @@ export default function TwitterButton({title}) {
         <div className={styles.twitterButton}>
             <a 	href={'https://twitter.com/intent/tweet?text=' + '¡Nueva idea para ' + '&hashtags=MejorarLaUni' + "! -- " + "\n" + title + '. mejorarlauni.com/show'}
 				target="_blank">
-                <FontAwesomeIcon icon={faTwitter} width="24" title="Comparte en Twitter"/>
+                <FontAwesomeIcon icon={faTwitter} width="24"/>
                 
 			</a>
         </div>

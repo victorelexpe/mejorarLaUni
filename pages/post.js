@@ -7,7 +7,7 @@ import fetch from 'isomorphic-unfetch'
 import Cookies from 'cookies'
 import jwt from 'jsonwebtoken'
 
-const addPost = ({data}) => {
+const addPost = ({user}) => {
 
     const router = useRouter()
     const [errorMsg, setErrorMsg] = useState('');
@@ -15,27 +15,27 @@ const addPost = ({data}) => {
 
     useEffect(() => {
         // redirect to login if user is not authenticated
-        if (!data) router.replace('/login');
-    }, [data]);
+        if (!user) router.replace('/login');
+    }, [user]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const body = {
             title: e.currentTarget.title.value,
             description: e.currentTarget.description.value,
-            creatorId: data.email
+            creatorId: user._id
         }
         if((!body.title || !body.title.length) || (!body.description || !body.description.length)) return setErrorMsg("Todos los campos son obligatorios");
 
         setErrorMsg();
 
-        const res = await fetch('/api/post', {
+        const res = await fetch('/api/posts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
         });
 
-        if(res.status === 201) {
+        if(res.status === 200) {
             setSuccesMsg("Propuesta guardada correctamente");
             setTimeout(() => {
                 router.replace('/');
@@ -111,14 +111,35 @@ const addPost = ({data}) => {
 }
 
 export async function getServerSideProps(context) {
-    const cookies = new Cookies(context.req)
-    let data
-    if(cookies.get('token'))
-        data = jwt.verify(cookies.get('token'), process.env.JWT_SECRET)
-    else data = null
+   
+  const cookies = new Cookies(context.req)
+  let user
+  let data
+  if(cookies.get('token')){
+    try{
+      data = jwt.verify(cookies.get('token'), process.env.JWT_SECRET)
+    }catch(e) {
+      data = false
+    }
+
+    if(data){
+      const email = data.email
+      //user = await(await fetch(`${process.env.API_URL}/api/users/find_user_by_email`, {
+      user = await(await fetch(`${process.env.VERCEL_URL}/api/users/find_user_by_email`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+      }),
+      })).json()
+    }else user = null
+  }else user = null
+
     return { 
       props: {
-        data
+        user
       }
     }
   }

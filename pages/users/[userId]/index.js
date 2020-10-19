@@ -2,11 +2,19 @@ import React from 'react';
 import Head from 'next/head';
 import Error from 'next/error';
 import middleware from '../../../middlewares/middleware'
+import nextConnect from 'next-connect';
 import Cookies from 'cookies'
 import jwt from 'jsonwebtoken'
+import Grid from '../../../components/grid'
+import Card from '../../../components/card'
 
-export default function UserPage({ user }) {
+export default function UserPage({ user, ideas }) {
   if (!user) return <Error statusCode={404} />;
+  
+  let havePost
+  if(!ideas) havePost = false
+  else havePost = true
+
   return (
     <>
       <style jsx>
@@ -39,11 +47,7 @@ export default function UserPage({ user }) {
           }
         `}
       </style>
-      <Head>
-        <title>{user.email}</title>
-      </Head>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <section>
+      <div>
           <div>
             <h2>{user._id}</h2>
           </div>
@@ -55,13 +59,24 @@ export default function UserPage({ user }) {
           <p>
             {user.email}
           </p>
-        </section>
+          {havePost ? (
+          <Grid>
+            { 
+              ideas.map(idea => (
+              <Card key={idea._id} title={idea.title} description={idea.description} />
+            ))
+            }
+            </Grid>
+          ) : ( <></>)}
       </div>
     </>
   );
 }
   
 export async function getServerSideProps(context) {
+
+  const handler = nextConnect();
+  handler.use(middleware);
 
   const cookies = new Cookies(context.req)
   let data
@@ -70,17 +85,20 @@ export async function getServerSideProps(context) {
   else data = null
 
   let user
+  let ideas
   if(!data)
     user = null
   else {
-    await middleware.apply(context.req, context.res);
+    await handler.apply(context.req, context.res);
     //user = await (await fetch(`${process.env.API_URL}/api/users/${context.params.userId}`)).json();
-    user = await (await fetch('https://mejorarlauni.com/api/users/${context.params.userId}')).json();
+    user = await (await fetch(`${process.env.VERCEL_URL}/api/users/${context.params.userId}`)).json();
+    ideas = await(await fetch(`${process.env.VERCEL_URL}/api/posts/${context.params.userId}`)).json()
   }
   
   return {
     props: {
       user,
+      ideas
     },
   };
 }

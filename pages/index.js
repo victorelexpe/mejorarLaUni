@@ -32,7 +32,7 @@ function Home({ideas, user}) {
      {loggedIn && (
         <>
         <ul>
-          <li><Link href="/users/[userId]" as={`/users/${user.name}`}><a>Profile</a></Link></li>
+          <li><Link href="/users/[userId]" as={`/users/${user._id}`}><a>Profile</a></Link></li>
           <li><a tabIndex={0} role="button" onClick={() => {
               cookie.remove('token');
               revalidate();
@@ -159,8 +159,7 @@ export async function getServerSideProps(context) {
 
     if(data){
       const email = data.email
-      //user = await(await fetch(`${process.env.API_URL}/api/users/findUserByEmail`, {
-      user = await(await fetch('https://mejorarlauni.com/api/users/findUserByEmail', {
+      user = await(await fetch(`${process.env.VERCEL_URL}/api/users/find_user_by_email`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -172,8 +171,7 @@ export async function getServerSideProps(context) {
     }else user = null
   }else user = null
     
-  //const ideas = await (await fetch(`${process.env.API_URL}/api/post`)).json();
-  const ideas = await (await fetch('https://mejorarlauni.com/api/post')).json();
+  const ideas = await (await fetch(`${process.env.VERCEL_URL}/api/posts`)).json();
   return { 
     props: {
       ideas,

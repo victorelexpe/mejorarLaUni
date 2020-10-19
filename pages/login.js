@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import Router from 'next/router';
 import cookie from 'js-cookie';
 import fetch from 'isomorphic-unfetch'
+import Link from 'next/link'
 
 const Login = () => {
   const [loginError, setLoginError] = useState('');
@@ -55,6 +56,9 @@ const Login = () => {
       />
       <br /><br />
       <input type="submit" value="Submit" />
+      <Link href="/forget_password">
+          <a>Forget password</a>
+      </Link>
       {loginError && <p style={{color: 'red'}}>{loginError}</p>}
     </form>
   );
