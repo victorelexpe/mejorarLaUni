@@ -22,6 +22,7 @@ function createUser(db, name, email, password, callback) {
         name,
         email,
         password: hash,
+        date: Date.now()
         //name,
         //emailVerified: false
       },
