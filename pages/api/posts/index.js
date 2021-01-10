@@ -8,8 +8,8 @@ handler.use(middleware);
 
 handler.post(async (req, res) => {
 
-    const {title, description, creatorId} = req.body;
-    if(!title || !description || !creatorId) return res.status(400).send('Faltan campos requeridos');
+    const {title, description, creatorId, university} = req.body;
+    if(!title || !description || !creatorId || !university) return res.status(400).send('Faltan campos requeridos');
     if (await req.db.collection('users').countDocuments({ _id: creatorId }) > 0) {
         const post = await req.db
         .collection('posts')
@@ -17,6 +17,7 @@ handler.post(async (req, res) => {
           _id: v4(),
           title,
           description,
+          university,
           creatorId,
           createdAt: new Date()
         });

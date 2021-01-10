@@ -73,7 +73,7 @@ function Home({ideas, user}) {
       <Grid>
         {
           ideas.map(idea => (
-            <Card key={idea._id} title={idea.title} description={idea.description} />
+            <Card key={idea._id} title={idea.title} description={idea.description} university={idea.university} />
           ))
         }
       </Grid>

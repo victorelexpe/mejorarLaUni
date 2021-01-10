@@ -45,6 +45,13 @@ handler.post(async (req, res) => {
               expiresIn: 3000, //50 minutes
             },
           );
+
+          req.db.collection('users').updateOne( {email: user.email}, {$set: {'lastLogin': new Date().toString()}}, function(err, updatedUser){
+            if(err) {
+              res.status(404).json({error: true, message: 'Unable to update.'});
+              return;
+            }
+          })
           res.status(200).json({token});
           return;
         } else {

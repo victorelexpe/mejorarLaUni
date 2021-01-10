@@ -7,7 +7,7 @@ import fetch from 'isomorphic-unfetch'
 import Cookies from 'cookies'
 import jwt from 'jsonwebtoken'
 
-const addPost = ({user}) => {
+const addPost = ({user, universities}) => {
 
     const router = useRouter()
     const [errorMsg, setErrorMsg] = useState('');
@@ -23,9 +23,10 @@ const addPost = ({user}) => {
         const body = {
             title: e.currentTarget.title.value,
             description: e.currentTarget.description.value,
-            creatorId: user._id
+            creatorId: user._id,
+            university: e.currentTarget.university.value
         }
-        if((!body.title || !body.title.length) || (!body.description || !body.description.length)) return setErrorMsg("Todos los campos son obligatorios");
+        if((!body.title || !body.title.length) || (!body.description || !body.description.length) || (!body.university || !body.university.length)) return setErrorMsg("Todos los campos son obligatorios");
 
         setErrorMsg();
 
@@ -73,7 +74,19 @@ const addPost = ({user}) => {
               />
             </label>
             <br /><br />
+            <label htmlFor="university">
+              <select name="university">
+                {
+                  universities.map(university => (
+                    <option>{university.name}</option>
+                  ))
+                }
+                </select>
+            </label>
+            <br /><br />
             <button type="submit"><FontAwesomeIcon icon={faSave} width="24"/> Guardar</button>
+
+            
           </form>
 
           <style jsx global>{`
@@ -137,9 +150,13 @@ export async function getServerSideProps(context) {
     }else user = null
   }else user = null
 
+
+  const universities = await (await fetch(`${process.env.API_URL}/api/universities`)).json();
+
     return { 
       props: {
-        user
+        user,
+        universities
       }
     }
   }
