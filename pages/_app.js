@@ -1,12 +1,17 @@
 import Router from "next/router";
 import withAnalytics from "next-analytics";
-import Home from "./index"
+import Index from "./index"
+
+import 'bootstrap/dist/css/bootstrap.css'
 
 function MyApp({ Component, pageProps }) {
+
     return (
-        <Component {...pageProps}>
-            <Home {...pageProps}/>
-        </Component>
+        <>
+            <Component {...pageProps}>
+                <Index {...pageProps}/>
+            </Component>  
+        </>
     )
 }
   
