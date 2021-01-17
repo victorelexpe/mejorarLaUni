@@ -2,41 +2,45 @@ import React from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
 
+import NavBar from '../../components/navBar'
+
 const ForgetPasswordPage = () => {
-  async function handleSubmit(e) {
-    e.preventDefault(e);
+	async function handleSubmit(e) {
+		e.preventDefault(e);
 
-    const body = {
-      email: e.currentTarget.email.value,
-    };
+		const body = {
+			email: e.currentTarget.email.value,
+		};
 
-    const res = await fetch('/api/users/password/reset', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+		const res = await fetch('/api/users/password/reset', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(body),
+		});
 
-    if (res.status === 200) Router.replace('/');
-  }
+		if (res.status === 200) Router.replace('/');
+	}
 
-  return (
-    <>
-      <Head>
-        <title>Forget password</title>
-      </Head>
-      <h2>Forget password</h2>
-      <form onSubmit={handleSubmit}>
-        <p>Do not worry. Simply enter your email address below.</p>
-        <label htmlFor="email">
-          <input
-            id="email"
-            type="email"
-            placeholder="Email"
-          />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
-    </>
-  );
+	return (
+		<>
+			<NavBar/>
+			<div className="container mt-5 col-md-6">
+				<h1>Reestrablecer la contraseña</h1>
+				<form onSubmit={handleSubmit}>
+					<p className="lead">No te preocupes. Está todo controlado. Introduce tu correo debajo.</p>
+					<div className="form-floating mb-3">
+						<input
+							id="email"
+							type="email"
+							placeholder="Email"
+							className="form-control"
+						/>
+						<label htmlFor="email">Email</label>
+					</div>
+					<button type="submit" className="btn btn-primary mb-3">Enviar</button>
+				</form>
+			</div>
+		</>
+	);
 };
 export default ForgetPasswordPage;

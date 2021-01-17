@@ -2,66 +2,79 @@ import React, {useState} from 'react';
 import Router from 'next/router';
 import cookie from 'js-cookie';
 import fetch from 'isomorphic-unfetch'
+import NavBar from '../components/navBar'
 import Link from 'next/link'
 
 const Login = () => {
-  const [loginError, setLoginError] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+	const [loginError, setLoginError] = useState('');
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    //call api
-    fetch('/api/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    })
-      .then((r) => {
-        return r.json();
-      })
-      .then((data) => {
-        if (data && data.error) {
-          setLoginError(data.message);
-        }
-        if (data && data.token) {
-          //set cookie
-          cookie.set('token', data.token, {expires: 2});
-          Router.push('/');
-        }
-      });
-  }
-  return (
-    <form onSubmit={handleSubmit}>
-      <p>Login</p>
-      <input
-        name="email"
-        type="email"
-        placeholder="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <br /><br />
-      <input
-        name="password"
-        type="password"
-        placeholder="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <br /><br />
-      <input type="submit" value="Submit" />
-      <Link href="/forget_password">
-          <a>Forget password</a>
-      </Link>
-      {loginError && <p style={{color: 'red'}}>{loginError}</p>}
-    </form>
-  );
+	function handleSubmit(e) {
+		e.preventDefault();
+		//call api
+		fetch('/api/auth', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				email,
+				password,
+			}),
+		})
+			.then((r) => {
+				return r.json();
+			})
+			.then((data) => {
+				if (data && data.error) {
+					setLoginError(data.message);
+				}
+				if (data && data.token) {
+					//set cookie
+					cookie.set('token', data.token, {expires: 2});
+					Router.push('/');
+				}
+			});
+	}
+	return (
+		<>
+			<NavBar/>
+				<div className="container mt-5 col-md-6">
+					<h1>Iniciar sesión</h1>
+					<form onSubmit={handleSubmit}>
+						<div className="form-floating mb-3">
+							<input
+								type="email"
+								name="email"
+								placeholder="Email"
+								className="form-control"
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+							/>
+							<label htmlFor="email">Email</label>
+						</div>
+						<div className="form-floating mb-3">
+							<input
+								type="password"
+								className="form-control"
+								name="password"
+								placeholder="password"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+							/>
+							<label htmlFor="password">Contraseña</label>
+						</div>
+						<button type="submit" className="btn btn-primary mb-3">Entrar</button>
+						{loginError && <p style={{color: 'red'}}>{loginError}</p>}
+					</form>
+					<div>
+						<Link href="/forget_password">¿Has olvidado la contraseña?</Link>
+					</div>
+				</div>
+			
+		</>
+	);
 };
 
 export default Login;
