@@ -34,8 +34,8 @@ const ResetPasswordTokenPage = ({tokenId, valid}) => {
 	return (
 		<>
 			<NavBar/>
-			<div className="container mt-5 col-md-6">
-				<h1>Reestrablecer la contraseña</h1>
+			<div className="container pt-5 col-md-6" style={{minHeight: "100vh"}}>
+				<h1 className="mb-3">Reestrablecer la contraseña</h1>
 				{valid ? (
 					<>
 						<p className="lead">Introduce tu nueva contraseña.</p>

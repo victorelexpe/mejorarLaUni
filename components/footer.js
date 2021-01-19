@@ -4,10 +4,10 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
 
 export default function Footer() {
     return (
-        <footer className="pt-3 my-md-5 pt-md-5 border-top">
-            <div className="row text-center align-items-center">
+        <footer className="container border-top">
+            <div className="row text-center align-items-center pt-4">
                 <div className="col-12 col-md">
-                    <small className="d-block mb-3 text-muted">Let's Ping It © 2020</small>
+                    <small className="d-block mb-3 text-muted ">Let's Ping It © 2020</small>
                 </div>
                 <div className="col-6 col-md">
                     <h5>Sobre nosotros</h5>

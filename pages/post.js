@@ -5,14 +5,9 @@ import Cookies from 'cookies'
 import jwt from 'jsonwebtoken'
 import NavBar from '../components/navBar'
 
-const addPost = ({user, data, universities}) => {
+import isLoggedIn from '../utils/isLoggedIn'
 
-	let loggedIn = false;
-	if(data) {
-		if (data.email && user) {
-			loggedIn = true;
-		}
-	}
+const addPost = ({user, loggedIn, universities}) => {
 
 	const router = useRouter()
 	const [errorMsg, setErrorMsg] = useState('');
@@ -54,10 +49,10 @@ const addPost = ({user, data, universities}) => {
 	return (
 		<>
 			<NavBar loggedIn={loggedIn}/>
-			<div className="container mt-5 col-md-6">
+			<div className="container mt-5 col-md-6" style={{minHeight: "100vh"}}>
 				{errorMsg ? <p style={{ color: 'red' }}>{errorMsg}</p> : null}
 				{succesMsg ? <p style={{ color: 'green' }}>{succesMsg}</p> : null}
-				<h2>Nueva idea</h2>
+				<h2 className="mb-3">Nueva idea</h2>
 				<form onSubmit={handleSubmit}>
 					<div className="form-floating mb-3">
 						<input
@@ -66,6 +61,7 @@ const addPost = ({user, data, universities}) => {
 							placeholder="Título de la idea"
 							type="text"
 							name="title"
+							required={true}
 						/>
 						<label htmlFor="title">Título de la idea</label>
 					</div>
@@ -77,12 +73,13 @@ const addPost = ({user, data, universities}) => {
 							id="description"
 							name="description"
 							maxLength="500"
+							required={true}
 							style={{height: "150px"}}
 						/>
 						<label htmlFor="description">Descripción de la idea</label>
 					</div>	
 					<div className="form-floating mb-3">
-						<select className="form-select" id="floatingSelect" name="university">
+						<select className="form-select" id="floatingSelect" name="university" required={true}>
 							{
 								universities.map(university => (
 									<option key={university._id}>{university.name}</option>
@@ -99,41 +96,26 @@ const addPost = ({user, data, universities}) => {
 }
 
 export async function getServerSideProps(context) {
-	 
-	const cookies = new Cookies(context.req)
-	
-	let user, data, universities = null
 
-	universities = await (await fetch(`${process.env.API_URL}/api/universities`)).json();
+	let loggedIn = false
+	let universities = await (await fetch(`${process.env.API_URL}/api/universities`)).json();
+	let allData = await isLoggedIn(context)
 
-	if(cookies.get('token')) {
-		try{
-			data = jwt.verify(cookies.get('token'), process.env.JWT_SECRET)
-		}catch(e) {
-			data = false
+	if(allData.data) {
+		if (allData.data.email && allData.user) {
+			loggedIn = true;
 		}
-
-		if(data){
-			const email = data.email
-			user = await(await fetch(`${process.env.API_URL}/api/users/find_user_by_email`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				email,
-			}),
-			})).json()
-		} else data = null
-	} else {
-		user = null,
-		data = null
 	}
 
+	let user = allData.user
+
+	if(!universities) universities = null
+	if(!user) user = null
+	
 	return { 
 		props: {
 			user,
-			data,
+			loggedIn,
 			universities
 		}
 	}
