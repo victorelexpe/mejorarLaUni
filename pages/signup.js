@@ -5,6 +5,7 @@ import fetch from 'isomorphic-unfetch'
 import NavBar from '../components/navBar'
 
 const Signup = () => {
+	
 	const [signupError, setSignupError] = useState('');
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
@@ -23,17 +24,17 @@ const Signup = () => {
 				password,
 			}),
 		})
-			.then((r) => r.json())
-			.then((data) => {
-				if (data && data.error) {
-					setSignupError(data.message);
-				}
-				if (data && data.token) {
-					//set cookie
-					cookie.set('token', data.token, {expires: 2});
-					Router.push('/');
-				}
-			});
+		.then((r) => r.json())
+		.then((data) => {
+			if (data && data.error) {
+				setSignupError(data.message);
+			}
+			if (data && data.token) {
+				//set cookie
+				cookie.set('token', data.token, {expires: 2});
+				Router.push('/userIdeas');
+			}
+		});
 	}
 	return (
 		<>

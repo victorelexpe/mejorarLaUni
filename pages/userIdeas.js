@@ -3,15 +3,41 @@ import NavBar from '../components/navBar'
 import fetch from 'isomorphic-unfetch'
 import isLoggedIn from '../utils/isLoggedIn'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
+import cookie from 'js-cookie';
 
 function userIdeas({user, loggedIn, userIdeas}) {
+    
+    let id = null
+    if(user)
+        id = user._id;
 
     const router = useRouter()
 
+    function handleSubmit(e) {
+		e.preventDefault();
+		
+		fetch('/api/users/delete_user', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				id,
+			}),
+		})
+		.then((r) => {
+			return r.json();
+		})
+		.then((data) => {
+            cookie.remove('token');
+            Router.push('/');
+		});
+	}
+
     if(!loggedIn){
         if (typeof window !== 'undefined') {
-            router.push('/doesnt_exist');
+            router.push('/not_found');
             return; 
           }
     }
@@ -25,10 +51,13 @@ function userIdeas({user, loggedIn, userIdeas}) {
                     <h3>👩‍🎓 Hola, {user.name}!</h3>
                     <p className="text-muted">{user.email}</p>
                     <Link href='/post'>
-                        <a className="btn btn-outline-primary btn-lg" role="button">
+                        <a className="btn btn-outline-primary btn-md" role="button">
                             Nueva propuesta &rarr;
                         </a>
                     </Link>
+                    <form className="mt-3" onSubmit={handleSubmit}>
+                        <button type="submit" className="btn btn-outline-danger btn-sm">Borrar usuario</button>
+                    </form>
 
                     {userIdeas ? (
                         <>

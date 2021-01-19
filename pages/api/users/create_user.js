@@ -14,7 +14,6 @@ handler.use(middleware);
 
 function createUser(db, name, email, password, callback) {
   const collection = db.collection('users');
-  console.log(email)
   bcrypt.hash(password, 10, function(err, hash) {
     // Store hash in your password DB.
     collection.insertOne(
@@ -39,7 +38,7 @@ handler.post(async (req, res) => {
   const name = req.body.name;
   const email = normalizeEmail(req.body.email);
   const password = req.body.password;
-  
+
   if (!isEmail(email)) {
     res.status(400).send('El email introducido no es valido');
     return;
