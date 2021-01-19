@@ -25,7 +25,7 @@ handler.post(async (req, res) => {
 			return;
 		}
 		if (!user) {
-			res.status(404).json({error: true, message: 'No hemos encontrado ningun usuario'});
+			res.status(404).json({error: true, message: 'El email es incorrecto!'});
 			return;
 		} else {
 			bcrypt.compare(password, user.password, function(err, match) {
@@ -50,7 +50,7 @@ handler.post(async (req, res) => {
 					res.status(200).json({token});
 					return;
 				} else {
-					res.status(401).json({error: true, message: 'La contraseña es incorrecta!'});
+					res.status(401).json({error: true, message: 'La contraseña es incorrecta. Intentalo de nuevo!'});
 					return;
 				}
 			});

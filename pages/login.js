@@ -5,8 +5,6 @@ import fetch from 'isomorphic-unfetch'
 import NavBar from '../components/navBar'
 import Link from 'next/link'
 
-import isEmail from 'validator/lib/isEmail';
-
 const Login = () => {
 	const [loginError, setLoginError] = useState('');
 	const [email, setEmail] = useState('');

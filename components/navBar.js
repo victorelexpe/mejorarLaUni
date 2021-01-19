@@ -1,9 +1,9 @@
-import Link from 'next/link'
-import Head from 'next/head'
-import cookie from 'js-cookie';
-import Router from 'next/router'
 import React, {useState} from 'react';
+import Link from 'next/link'
+import Router from 'next/router'
+import cookie from 'js-cookie';
 import fetch from 'isomorphic-unfetch'
+import Message from './message'
 
 export default function navBar({loggedIn}){
 
@@ -25,20 +25,20 @@ export default function navBar({loggedIn}){
 				password,
 			}),
 		})
-			.then((r) => {
-				return r.json();
-			})
-			.then((data) => {
-				if (data && data.error) {
-					setLoginError(data.message);
-				}
-				if (data && data.token) {
-					//set cookie
-					cookie.set('token', data.token, {expires: 2});
-					Router.push('/');
-				}
-    
-            });
+        .then((r) => {
+            return r.json();
+        })
+        .then((data) => {
+            if (data && data.error) {
+                setLoginError(data.message);
+            } else setLoginError();
+            if (data && data.token) {
+                //set cookie
+                cookie.set('token', data.token, {expires: 2});
+                Router.push('/userIdeas');
+            }
+
+        });
     }
 
     return (
@@ -61,13 +61,17 @@ export default function navBar({loggedIn}){
                     <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                         {loggedIn && (
                             <ul className="navbar-nav me-auto mt-3 mt-md-0 mb-lg-0">
-                                <li className="nav-item mb-2 mb-md-0" style={{marginRight: "10px"}}>
-                                    {loggedIn && (
-                                        <Link href="/ideas">
-                                            <a className="navbar-brand fs-4" style={{paddingTop: "5px"}}>ideas</a>
-                                        </Link>
-                                    )}
+                                <li className="nav-item" style={{marginRight: "24px"}}>
+                                    <Link href="/userIdeas">
+                                        <a className="navbar-link fs-4 text-dark text-decoration-none">mis contribuciones</a>
+                                    </Link>
                                 </li>
+                                <li className="nav-item" style={{marginRight: "24px"}}>
+                                    <Link href="/ideas">
+                                        <a className="navbar-link fs-4 text-dark text-decoration-none">todas las ideas</a>
+                                    </Link>
+                                </li>
+                                <li className="nav-item mb-2 mb-md-0"><hr className="dropdown-divider"/></li>
                                 <li className="nav-item">
                                     <button className="btn btn-outline-danger" type="submit" onClick={() => {
                                         cookie.remove('token');
@@ -110,8 +114,22 @@ export default function navBar({loggedIn}){
                             </form>
                         )}
                     </div>
-                </div>  
+                </div>
+                <style jsx>{`
+                   .navbar-toggler:focus,
+                   .navbar-toggler:active,
+                   .navbar-toggler-icon:focus {
+                       outline: none;
+                       box-shadow: none;
+                   }
+                `}</style>
             </nav>
+            {loginError && (
+                <Message show={true} msg={loginError}/>
+            )}
+            
+            
+
         </>
     )
 }
