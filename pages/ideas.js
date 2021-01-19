@@ -3,7 +3,7 @@ import NavBar from '../components/navBar'
 import fetch from 'isomorphic-unfetch'
 import isLoggedIn from '../utils/isLoggedIn'
 
-function allIdeas({loggedIn, ideas}) {
+function ideas({loggedIn, ideas}) {
 
     return (
         <>
@@ -59,4 +59,4 @@ export async function getServerSideProps(context) {
 	}
 }
 
-export default allIdeas;
+export default ideas;

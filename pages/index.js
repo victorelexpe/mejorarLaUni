@@ -3,9 +3,19 @@ import TwitterButton from '../components/twitterButton'
 import Link from 'next/link'
 import fetch from 'isomorphic-unfetch'
 import isLoggedIn from '../utils/isLoggedIn'
+import { useRouter } from 'next/router'
 
 function Home({loggedIn, user, allIdeas, userIdeas}) {
-    
+	
+	const router = useRouter()
+
+    if(loggedIn){
+        if (typeof window !== 'undefined') {
+            router.push('/userIdeas');
+            return; 
+          }
+    }
+	
 	return (
 		<>
 			<NavBar loggedIn={loggedIn}/>
@@ -47,44 +57,7 @@ function Home({loggedIn, user, allIdeas, userIdeas}) {
 						) : ( <>
 							<p className="lead">Todavía no has registrado ninguna propuesta.</p>
 						</>)}
-					</>
-				)}
-
-				{loggedIn && (
-					<>
-						<h3>👩‍🎓 Hola, {user.name}!</h3>
-						<p className="text-muted">{user.email}</p>
-						<Link href='/post'>
-							<a className="btn btn-outline-primary btn-lg" role="button">
-								Nueva propuesta &rarr;
-							</a>
-						</Link>
-						{userIdeas ? (
-							<>
-								<h3 className="mt-5 pt-2">Tus contribuciones <span className="badge bg-primary">{Object.keys(userIdeas).length}</span></h3>
-								<div className="row row-cols-md-1 g-4 mt-0">
-									{
-										userIdeas.map(idea => (
-											<div className="col-md" key={idea._id}>
-												<div className="card">
-													<div className="card-body">
-														<h5 className="card-title">{idea.title}</h5>
-														<h6 className="card-subtitle mb-3 text-muted">{idea.university}</h6>
-														<p className="card-text mt-3">{idea.description}</p>
-													</div>
-													<TwitterButton title={idea.title} id={idea._id}/>
-												</div>
-											</div>
-										))
-									}
-								</div>
-							</>
-						) : ( <>
-							<p className="lead">Todavía no has registrado ninguna propuesta.</p>
-						</>)
-						}
-						
-					</>
+					</> 
 				)}
 			</div>
 		</>
@@ -112,6 +85,13 @@ export async function getServerSideProps(context) {
 	if(!user) user = null
 	if(!allIdeas) allIdeas = null
 	if(!userIdeas) userIdeas = null
+
+	if(loggedIn){
+        if (context.res) {
+            context.res.writeHead(302, { Location: '/userIdeas' });
+            context.res.end();
+        }
+    }
 
 	return { 
 		props: {

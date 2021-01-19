@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import fetch from 'isomorphic-unfetch'
-import Cookies from 'cookies'
-import jwt from 'jsonwebtoken'
 import NavBar from '../components/navBar'
-
 import isLoggedIn from '../utils/isLoggedIn'
 
 const addPost = ({user, loggedIn, universities}) => {
