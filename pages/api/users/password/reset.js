@@ -49,7 +49,7 @@ handler.post(async (req, res) => {
         html: `
         <div>
           <p>Hola, ${user.name}</p>
-          <p>Por favor, sigue este <a href="${process.env.API_URL}/forget_password/${token}">enlace</a> para restablecer tu contraseña.</p>
+          <p>Por favor, sigue este <a href="${process.env.API_URL}/forgot_password/${token}">enlace</a> para restablecer tu contraseña.</p>
         </div>
         `,
     }, function (error) {

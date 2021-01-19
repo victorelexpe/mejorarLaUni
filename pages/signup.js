@@ -38,8 +38,8 @@ const Signup = () => {
 	return (
 		<>
 			<NavBar/>
-			<div className="container mt-5 col-md-6">
-				<h1>Regístrate</h1>
+			<div className="container pt-5 col-md-6" style={{minHeight: "100vh"}}>
+				<h1 className="mb-3">Regístrate</h1>
 				<form onSubmit={handleSubmit}>
 					
 					<div className="form-floating mb-3">
@@ -49,6 +49,7 @@ const Signup = () => {
 							type="name"
 							placeholder="name"
 							value={name}
+							required={true}
 							onChange={(e) => setName(e.target.value)}
 						/>
 						<label htmlFor="name">Nombre de usuario</label>
@@ -60,6 +61,8 @@ const Signup = () => {
 							type="email"
 							placeholder="email"
 							value={email}
+							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+							required={true}
 							onChange={(e) => setEmail(e.target.value)}
 						/>
 						<label htmlFor="email">Email</label>
@@ -71,6 +74,7 @@ const Signup = () => {
 							type="password"
 							placeholder="password"
 							value={password}
+							required={true}
 							onChange={(e) => setPassword(e.target.value)} 
 						/>
 						<label htmlFor="password">Contraseña</label>

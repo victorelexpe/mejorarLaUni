@@ -14,6 +14,7 @@ handler.use(middleware);
 
 function createUser(db, name, email, password, callback) {
   const collection = db.collection('users');
+  console.log(email)
   bcrypt.hash(password, 10, function(err, hash) {
     // Store hash in your password DB.
     collection.insertOne(
