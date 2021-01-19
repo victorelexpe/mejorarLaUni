@@ -75,19 +75,19 @@ export async function getServerSideProps(context) {
 		}
     }
 
-    if(!loggedIn){
-        if (context.res) {
-            context.res.writeHead(302, { Location: '/doesnt_exist' });
-            context.res.end();
-        }
-    }
-
     if(user) {
 		userIdeas = await(await fetch(`${process.env.API_URL}/api/posts/${user._id}`)).json()
 	}
     
     if(!user) user = null
     if(!userIdeas) userIdeas = null
+
+    if(!loggedIn){
+        if (context.res) {
+            context.res.writeHead(302, { Location: '/doesnt_exist' });
+            context.res.end();
+        }
+    }
 
 	return { 
 		props: {

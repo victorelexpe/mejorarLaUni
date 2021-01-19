@@ -3,9 +3,19 @@ import TwitterButton from '../components/twitterButton'
 import Link from 'next/link'
 import fetch from 'isomorphic-unfetch'
 import isLoggedIn from '../utils/isLoggedIn'
+import { useRouter } from 'next/router'
 
 function Home({loggedIn, user, allIdeas, userIdeas}) {
-    
+	
+	const router = useRouter()
+
+    if(loggedIn){
+        if (typeof window !== 'undefined') {
+            router.push('/userIdeas');
+            return; 
+          }
+    }
+	
 	return (
 		<>
 			<NavBar loggedIn={loggedIn}/>
@@ -47,7 +57,7 @@ function Home({loggedIn, user, allIdeas, userIdeas}) {
 						) : ( <>
 							<p className="lead">Todavía no has registrado ninguna propuesta.</p>
 						</>)}
-					</>
+					</> 
 				)}
 			</div>
 		</>
@@ -75,6 +85,13 @@ export async function getServerSideProps(context) {
 	if(!user) user = null
 	if(!allIdeas) allIdeas = null
 	if(!userIdeas) userIdeas = null
+
+	if(loggedIn){
+        if (context.res) {
+            context.res.writeHead(302, { Location: '/userIdeas' });
+            context.res.end();
+        }
+    }
 
 	return { 
 		props: {
