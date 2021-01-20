@@ -2,9 +2,14 @@ import Router from "next/router";
 import withAnalytics from "next-analytics";
 import Index from "./index"
 import Footer from '../components/footer'
+import NProgress from 'nprogress';
 
-
+import 'nprogress/nprogress.css';
 import 'bootstrap/dist/css/bootstrap.css'
+
+Router.events.on('routeChangeStart', () => NProgress.start()); 
+Router.events.on('routeChangeComplete', () => NProgress.done()); 
+Router.events.on('routeChangeError', () => NProgress.done());
 
 function MyApp({ Component, pageProps }) {
 
