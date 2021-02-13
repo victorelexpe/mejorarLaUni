@@ -1,7 +1,7 @@
 import isAuth from '../utils/isAuth'
 import {useState, useRef} from 'react'
 import Router from 'next/router'
-import NavBar from '../components/navbar'
+import NavBar from '../components/navBar'
 
 const Settings = ({user, token}) => {
 

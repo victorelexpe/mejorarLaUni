@@ -1,6 +1,6 @@
 import React from 'react'
 import Router from 'next/router'
-import NavBar from '../../../components/navbar'
+import NavBar from '../../../components/navBar'
 import {useState } from 'react'
 
 const ForgotPasswordPage = () => {

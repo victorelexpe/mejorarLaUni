@@ -1,4 +1,4 @@
-import NavBar from '../components/navbar'
+import NavBar from '../components/navBar'
 
 export default function Footer() {
     return (

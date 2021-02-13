@@ -1,4 +1,4 @@
-import NavBar from '../components/navbar'
+import NavBar from '../components/navBar'
 import TwitterButton from '../components/twitterButton'
 import Link from 'next/link'
 import fetch from 'isomorphic-unfetch'

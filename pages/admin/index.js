@@ -1,4 +1,4 @@
-import NavBar from '../../components/navbar'
+import NavBar from '../../components/navBar'
 import isAuth from '../../utils/isAuth'
 import Link from 'next/link'
 

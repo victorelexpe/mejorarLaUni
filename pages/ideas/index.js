@@ -1,5 +1,5 @@
 import TwitterButton from '../../components/twitterButton'
-import NavBar from '../../components/navbar'
+import NavBar from '../../components/navBar'
 import fetch from 'isomorphic-unfetch'
 import isAuth from '../../utils/isAuth'
 

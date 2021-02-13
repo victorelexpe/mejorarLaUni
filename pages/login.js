@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import Router from 'next/router'
 import cookie from 'js-cookie'
 import fetch from 'isomorphic-unfetch'
-import NavBar from '../components/navbar'
+import NavBar from '../components/navBar'
 import Link from 'next/link'
 
 const Login = () => {

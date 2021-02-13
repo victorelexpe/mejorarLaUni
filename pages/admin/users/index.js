@@ -1,4 +1,4 @@
-import NavBar from '../../../components/navbar'
+import NavBar from '../../../components/navBar'
 import isAuth from '../../../utils/isAuth'
 import { useEffect, useState } from 'react'
 import {createUser, getUsers, deleteUser} from '../../../actions/users'

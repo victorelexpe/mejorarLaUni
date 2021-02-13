@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import NavBar from '../components/navbar'
+import NavBar from '../components/navBar'
 import {createUser} from '../actions/users'
 
 const Signup = () => {

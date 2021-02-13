@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import nextConnect from 'next-connect'
 import Router from 'next/router'
 import database from '../../../middlewares/database'
-import NavBar from '../../../components/navbar'
+import NavBar from '../../../components/navBar'
 
 const ResetPasswordTokenPage = ({tokenId, valid}) => {
 
