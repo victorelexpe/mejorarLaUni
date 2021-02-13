@@ -1,19 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState} from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
-import cookie from 'js-cookie';
+import cookie from 'js-cookie'
 import fetch from 'isomorphic-unfetch'
-import Message from './message'
 
-export default function navBar({loggedIn}){
+export default function navBar({user}){
 
-    const [loginError, setLoginError] = useState('');
-	const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [values, setValues] = useState({
+		email: '',
+		password: '',
+		error: '',
+		success: ''
+	})
+
+    const {email, password, error, success} = values
 
 	function handleSubmit(e) {
 
-		e.preventDefault();
+		e.preventDefault()
 		//call api
 		fetch('/api/auth', {
 			method: 'POST',
@@ -26,27 +30,36 @@ export default function navBar({loggedIn}){
 			}),
 		})
         .then((r) => {
-            return r.json();
+            return r.json()
         })
         .then((data) => {
             if (data && data.error) {
-                setLoginError(data.message);
-            } else setLoginError();
-            if (data && data.token) {
+                setValues({...values, error: data.error, success: ''})
+            } else if (data && data.token) {
                 //set cookie
-                cookie.set('token', data.token, {expires: 2});
-                Router.push('/userIdeas');
+                setValues({...values, email: '', password: '', error: '', success: 'Has iniciado sesión correctamente. Redirigiendo...'})
+                cookie.set('token', data.token, {expires: 2})
+                Router.push(`/ideas/${data.slug}`)
             }
 
-        });
+        })
     }
+
+    const handleChange = name => e => {
+        setValues({ ...values, [name]: e.target.value, error: '', success: false})
+	}
+
+    const showError = () => (error ? <div className="alert alert-danger" onMouseOver={mouseMoveHandler}>{error}</div> : '')
+	const showSuccess = () => (success ? <div className="alert alert-success mt-3" >{success}</div> : '')
+
+    const mouseMoveHandler = e => {setValues({...values, error: ''})}
 
     return (
         <>
             <nav className="navbar navbar-light navbar-expand-md bg-light">
                 <div className="container">
-                    {loggedIn ? (
-                        <Link href="/userIdeas">
+                    {user ? (
+                        <Link href={`/ideas/${user.slug}`}>
                             <a className="navbar-brand me-4" style={{marginBottom: "3px"}}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" className="bi bi-house-door" viewBox="0 0 16 16">
                                     <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
@@ -68,23 +81,35 @@ export default function navBar({loggedIn}){
                     </button>
 
                     <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                        {loggedIn && (
+                        {user && (
                             <ul className="navbar-nav me-auto mt-3 mt-md-0 mb-lg-0">
                                 <li className="nav-item" style={{marginRight: "24px"}}>
                                     <Link href="/ideas">
                                         <a className="navbar-link fs-4 text-dark text-decoration-none">todas las ideas</a>
                                     </Link>
                                 </li>
+                                <li className="nav-item" style={{marginRight: "24px"}}>
+                                    <Link href="/settings">
+                                        <a className="navbar-link fs-4 text-dark text-decoration-none">opciones</a>
+                                    </Link>
+                                </li>
+                                {user.role === 1 && (
+                                    <li className="nav-item" style={{marginRight: "24px"}}>
+                                        <Link href="/admin">
+                                            <a className="navbar-link fs-4 text-dark text-decoration-none">administración</a>
+                                        </Link>
+                                    </li>   
+                                )}   
                                 <li className="nav-item mb-2 mb-md-0"><hr className="dropdown-divider"/></li>
                                 <li className="nav-item">
                                     <button className="btn btn-outline-danger" type="submit" onClick={() => {
-                                        cookie.remove('token');
-                                        Router.push('/');
+                                        cookie.remove('token')
+                                        Router.push('/')
                                     }}>Cerrar sesión</button>
                                 </li>
                             </ul>
                         )}
-                        {!loggedIn && (
+                        {!user && (
                             <form onSubmit={handleSubmit}>
                                 <div className="row align-items-center my-auto py-3 py-md-0">
                                     <div className="col-md mb-2 mb-md-0">
@@ -96,7 +121,7 @@ export default function navBar({loggedIn}){
                                             value={email}
                                             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
                                             required={true}
-                                            onChange={(e) => setEmail(e.target.value)}
+                                            onChange={handleChange('email')}
                                         />
                                     </div>
                                     <div className="col-md mb-2 mb-md-0">
@@ -107,14 +132,14 @@ export default function navBar({loggedIn}){
                                             placeholder="Contraseña"
                                             value={password}
                                             required={true}
-                                            onChange={(e) => setPassword(e.target.value)}
+                                            onChange={handleChange('password')}
                                         />
                                     </div>
                                     <div className="col-md-2 d-grid">
                                         <button type="submit" className="btn btn-primary">Entrar</button>
                                     </div>
                                 </div>
-					            <Link href="/forgot_password"><a style={{fontSize: "1em", textDecoration: "none"}}>¿Has olvidado la contraseña?</a></Link>
+					            <Link href="/password/reset"><a style={{fontSize: "1em", textDecoration: "none"}}>¿Has olvidado la contraseña?</a></Link>
                             </form>
                         )}
                     </div>
@@ -128,12 +153,10 @@ export default function navBar({loggedIn}){
                    }
                 `}</style>
             </nav>
-            {loginError && (
-                <Message show={true} msg={loginError}/>
-            )}
-            
-            
-
+            <div className="container">
+                {showError()}
+                {showSuccess()}
+            </div>
         </>
     )
 }

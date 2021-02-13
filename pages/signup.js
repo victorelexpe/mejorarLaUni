@@ -1,41 +1,40 @@
-import React, {useState} from 'react';
-import Router from 'next/router';
-import cookie from 'js-cookie';
-import fetch from 'isomorphic-unfetch'
-import NavBar from '../components/navBar'
+import React, {useState} from 'react'
+import NavBar from '../components/navbar'
+import {createUser} from '../actions/users'
 
 const Signup = () => {
 	
-	const [signupError, setSignupError] = useState('');
-	const [name, setName] = useState('');
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+	const [values, setValues] = useState({
+		name: '',
+		email: '',
+		password: '',
+		error: '',
+		success: ''
+	})
+
+	const {name, email, password, error, success} = values
 	
 	function handleSubmit(e) {
-		e.preventDefault();
-		fetch('/api/users/create_user', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				name,
-				email,
-				password,
-			}),
-		})
-		.then((r) => r.json())
-		.then((data) => {
+		e.preventDefault()
+		createUser({name, email, password}).then((data) => {
 			if (data && data.error) {
-				setSignupError(data.message);
+				setValues({...values, error: data.error, success: ''})
+			} else{
+				setValues({...values, name: '', email: '', password: '', error: '', success: 'Te has registrado correctamente. Por favor, inicia sesión'})
 			}
-			if (data && data.token) {
-				//set cookie
-				cookie.set('token', data.token, {expires: 2});
-				Router.push('/userIdeas');
-			}
-		});
+				
+		})
 	}
+
+	const handleChange = name => e => {
+        setValues({ ...values, [name]: e.target.value, error: '', success: false})
+    }
+
+	const showError = () => (error ? <div className="alert alert-danger mt-3" onMouseOver={mouseMoveHandler}>{error}</div> : '')
+	const showSuccess = () => (success ? <div className="alert alert-success mt-3" >{success}</div> : '')
+
+	const mouseMoveHandler = e => {setValues({...values, error: ''})}
+
 	return (
 		<>
 			<NavBar/>
@@ -51,7 +50,7 @@ const Signup = () => {
 							placeholder="name"
 							value={name}
 							required={true}
-							onChange={(e) => setName(e.target.value)}
+							onChange={handleChange('name')}
 						/>
 						<label htmlFor="name">Nombre de usuario</label>
 					</div>
@@ -64,7 +63,7 @@ const Signup = () => {
 							value={email}
 							pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
 							required={true}
-							onChange={(e) => setEmail(e.target.value)}
+							onChange={handleChange('email')}
 						/>
 						<label htmlFor="email">Email</label>
 					</div>
@@ -76,16 +75,17 @@ const Signup = () => {
 							placeholder="password"
 							value={password}
 							required={true}
-							onChange={(e) => setPassword(e.target.value)} 
+							onChange={handleChange('password')}
 						/>
 						<label htmlFor="password">Contraseña</label>
 					</div>
 					<button className="btn btn-primary" type="submit">Entrar! &rarr;</button>
-					{signupError && <p style={{color: 'red'}}>{signupError}</p>}
+					{showError()}
+					{showSuccess()}
 				</form>
 			</div>
 		</>
-	);
-};
+	)
+}
 
-export default Signup;
+export default Signup

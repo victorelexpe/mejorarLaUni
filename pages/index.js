@@ -1,34 +1,24 @@
-import NavBar from '../components/navBar'
+import NavBar from '../components/navbar'
 import TwitterButton from '../components/twitterButton'
 import Link from 'next/link'
 import fetch from 'isomorphic-unfetch'
-import isLoggedIn from '../utils/isLoggedIn'
-import { useRouter } from 'next/router'
+import isAuth from '../utils/isAuth'
 
-function Home({loggedIn, user, allIdeas, userIdeas}) {
-	
-	const router = useRouter()
-
-    if(loggedIn){
-        if (typeof window !== 'undefined') {
-            router.push('/userIdeas');
-            return; 
-          }
-    }
+function Home({user, allIdeas}) {
 	
 	return (
 		<>
-			<NavBar loggedIn={loggedIn}/>
+			<NavBar user={user}/>
 			<div className="container pt-5 col-md-12 mb-5" style={{minHeight: "100vh"}}>
-				{!loggedIn && (
+				{!user && (
 					<>
 						<div className="mb-5">
 							<h1 className="display-3 text-center">👩‍🎓</h1>
 							<h1 className="display-3 text-center fw-bold text-primary">¿Cómo mejorarías la uni?</h1>
 							<br></br>
 							<h3 className="display-6 text-center fs-sm-4 fs-lg-3">La uni <strong style={{fontWeight: "bold"}}>necesita mejorar</strong>. Todos lo sabemos.
-							<br/>Y tenemos ideas para cambiar <strong style={{fontWeight: "bold"}}>a mejor.</strong>
-							<br/>¿Nuestra propuesta? <strong style={{fontWeight: "bold"}}>Queremos ser quienes llevemos las riendas de este gran cambio</strong>.</h3>
+							<br/>Regitrate ahora y <strong style={{fontWeight: "bold"}}>añade tu propuesta.</strong>
+							<br/>Juntos podemos hacer posible este <strong style={{fontWeight: "bold"}}>gran cambio.</strong></h3>
 						</div>
 						<Link href='/signup'><a className="d-flex justify-content-center btn btn-outline-primary btn-lg mx-auto w-50" role="button">Regístrate &rarr;</a></Link>
 
@@ -39,7 +29,7 @@ function Home({loggedIn, user, allIdeas, userIdeas}) {
 							<div className="row row-cols-md-1 g-4 mt-5">
 								<h3 className="mt-5">Todas <span className="badge bg-primary">{Object.keys(allIdeas).length}</span></h3>
 								{
-									allIdeas.map(idea => (
+									allIdeas.map((idea) => (
 										<div className="col-md" id={idea._id} key={idea._id}>
 											<div className="card">
 												<div className="card-body">
@@ -61,46 +51,33 @@ function Home({loggedIn, user, allIdeas, userIdeas}) {
 				)}
 			</div>
 		</>
-	);
+	)
 }
 
 export async function getServerSideProps(context) {
 
-	let userIdeas = null
-	let allIdeas = await(await fetch(`${process.env.API_URL}/api/posts`)).json()
-	let allData = await isLoggedIn(context)
-	let user = allData.user
+	let auth = await isAuth(context)
+	let user = auth.user
+	let token = auth.token
+	
+	let allIdeas = await(await fetch(`${process.env.API_URL}/api/get/ideas`)).json()
 
-	if(allData.user) {
-		userIdeas = await(await fetch(`${process.env.API_URL}/api/posts/${allData.user._id}`)).json()
+	if(token && user) {
+		context.res.writeHead(302, { Location: `/ideas/${user.slug}` })
+        context.res.end()
+	} else{
+		user = null
+		token = null
 	}
 
-	let loggedIn = false;
-	if(allData.data) {
-		if (allData.data.email && allData.user) {
-			loggedIn = true;
-		}
-	}
-
-	if(!user) user = null
 	if(!allIdeas) allIdeas = null
-	if(!userIdeas) userIdeas = null
-
-	if(loggedIn){
-        if (context.res) {
-            context.res.writeHead(302, { Location: '/userIdeas' });
-            context.res.end();
-        }
-    }
 
 	return { 
 		props: {
-			loggedIn,
 			user,
 			allIdeas,
-			userIdeas,
 		}
 	}
 }
 
-export default Home;
+export default Home

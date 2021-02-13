@@ -1,0 +1,197 @@
+
+import NavBar from '../../../components/navbar'
+import isAuth from '../../../utils/isAuth'
+import { useEffect, useState } from 'react'
+import {createIdea, getIdeas, deleteIdea} from '../../../actions/ideas'
+import {getUniversities} from '../../../actions/universities'
+
+const AdminIdea = ({user, token}) =>{
+
+    const [values, setValues] = useState({
+        title: '',
+        description: '',
+        error: '',
+        message: '',
+        sucess: false,
+        reload: false
+    })
+
+    const [universities, setUniversities] = useState([])
+    const [ideas, setIdeas] = useState([])
+    const { title, description, error, message, reload } = values
+
+    useEffect(() => {
+        loadUniversities()
+        loadIdeas()
+    }, [reload])
+
+    function loadUniversities() {
+		getUniversities().then((data) => {
+            if (data && data.error) {
+                setUniversities([])
+                setValues({...values, error: data.error, message: ''})
+                
+			}else {
+                setUniversities(data)
+            }
+        })
+    }
+
+    function loadIdeas() {
+		getIdeas().then((data) => {
+            if (data && data.error) {
+                setIdeas([])
+				setValues({...values, error: data.error, message: ''})
+			}else {
+                setIdeas(data)
+            }
+        })
+    }
+
+    const showIdeas = () => {
+        return ideas.map((i) => {
+            return (
+                <div className="col-md mb-2" key={i._id}>
+                    <div className="card">
+                        <div className="card-body">
+                            <h5 className="card-title">{i.title}</h5>
+                            <h6 className="card-subtitle mb-3 text-muted">{i.university}</h6>
+                            <p className="card-text mb-0">{i.description}</p>
+                            <button
+                                onClick={() => deleteConfirm(i.slug)}
+                                title="Click to delete"
+                                className="btn btn-close position-absolute top-0 end-0">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )
+        })        
+    }
+
+    function removeIdea(slug) {
+		deleteIdea(slug, token).then((data) => {
+            if (data && data.error) {
+				setValues({...values, error: data.error, message: ''})
+			}else {
+                setValues({...values, title: '', description: '', error: '', message: data.message, reload: !reload})
+            }
+        })
+	}
+
+    const deleteConfirm = slug => {
+        let answer = window.confirm('Are you sure you want to delete this idea?')
+        if (answer) {
+            removeIdea(slug)
+        }
+    }
+
+	const handleChange = name => e => {
+        setValues({ ...values, [name]: e.target.value, error: ''})
+    }
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        
+        let postedBy = user.slug
+        let university = e.currentTarget.university.value
+
+        createIdea({title, description, postedBy, university}, token).then((data) => {
+			if (data && data.error) {
+				setValues({...values, error: data.error, message: ''})
+			} else{
+				setValues({...values, title: '', description: '', error: '', message: data.message, reload: !reload })
+            }
+		})
+    }
+    
+    const showError = () => (error ? <div className="alert alert-danger">{error}</div> : '')
+    const showMessage = () => (message ? <div className="alert alert-success">{message}</div> : '')
+    const mouseMoveHandler = e => {
+        setValues({ ...values, error: '', message: ''})
+    }
+
+    return (
+        <>
+            <NavBar user={user}/>
+            <div className="container pt-5 col-md-12 mb-5" style={{minHeight: "100vh"}}>
+                <h2 className="mb-3" >Crear ideas</h2>
+                <form onSubmit={handleSubmit} onMouseOver={mouseMoveHandler} className="mb-3">
+					<div className="form-floating mb-3">
+						<input
+							className="form-control"
+							id="title"
+							placeholder="Título de la idea"
+							type="text"
+							name="title"
+                            onChange={handleChange('title')}
+                            value={title}
+							required
+						/>
+						<label htmlFor="title">Título de la idea</label>
+					</div>
+					<div className="form-floating mb-3">
+						<textarea
+							className="form-control"
+							placeholder="Descripción de la propuesta"
+							type="text"
+							id="description"
+							name="description"
+							maxLength="500"
+                            onChange={handleChange('description')}
+                            value={description}
+							required
+							style={{height: "150px"}}
+						/>
+						<label htmlFor="description">Descripción de la idea</label>
+					</div>	
+					<div className="form-floating mb-3">
+                    <select className="form-select" id="floatingSelect" name="university" required={true}>
+							{
+								universities.map((university, i) => (
+									<option key={i} value={university.name}>{university.name}</option>
+								))
+							}
+						</select>
+						<label htmlFor="floatingSelect">Universidad a mejorar</label>
+					</div>
+					<button className="btn btn-primary" type="submit">Crear &rarr;</button>						
+                </form>
+                {showError()}
+				{showMessage()}
+                <h2 className="mb-3 mt-5">Listado y borrado de ideas</h2>
+                {showIdeas()}
+            </div>
+        </>
+    )
+}
+
+export async function getServerSideProps(context) {
+
+    let auth = await isAuth(context)
+    
+    let user = auth.user
+    let token = auth.token
+
+    if(token && user) {
+        if(user.role == 0){
+            context.res.writeHead(302, { Location: `/ideas/${user.slug}` })
+            context.res.end()
+        }
+    } else {
+        user = null
+        token = null
+        context.res.writeHead(302, { Location: '/' })
+        context.res.end()
+    }
+
+	return { 
+		props: {
+            user,
+            token
+		}
+	}
+}
+
+
+export default AdminIdea
